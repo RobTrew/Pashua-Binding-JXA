@@ -33,8 +33,9 @@
 // Return value : JavaScript Object in which dialog element names
 //                are bound to values entered by the user.
 
-// showDialog :: String | Object -> maybe Path String -> () -> Object
+
 function showDialog(config, customLocation) {
+    // showDialog :: String | Object -> maybe String -> Object
     'use strict';
 
     var a = Application.currentApplication(),
@@ -88,10 +89,9 @@ function showDialog(config, customLocation) {
     }
 }
 
-// Path of Pashua.app
 
-// locatePashua :: maybe String -> maybe String
 function locatePashua(strCustomPath) {
+    // locatePashua :: maybe String -> maybe String
 
     var a = Application.currentApplication(),
         sa = (a.includeStandardAdditions = true, a),
@@ -179,7 +179,7 @@ function locatePashua(strCustomPath) {
 //     "type": "openbrowser",
 //     "label": "Example filesystem browser (textfield + open panel)",
 //     "width": 310,
-//     "tooltip": "This is an element of type ÒopenbrowserÓ"
+//     "tooltip": "This is an element of type 'openbrowser'"
 //   },
 //   {
 //     "Comments": "Define radiobuttons",
@@ -191,7 +191,7 @@ function locatePashua(strCustomPath) {
 //       "Radiobutton item #2",
 //       "Radiobutton item #3"
 //     ],
-//     "tooltip": "This is an element of type ÒradiobuttonÓ"
+//     "tooltip": "This is an element of type 'radiobutton'"
 //   },
 //   {
 //     "Comments": "Add a popup menu",
@@ -205,7 +205,7 @@ function locatePashua(strCustomPath) {
 //       "Popup menu item #3"
 //     ],
 //     "default": "Popup menu item #2",
-//     "tooltip": "This is an element of type ÒpopupÓ"
+//     "tooltip": "This is an element of type 'popup'"
 //   }
 // ]
 // 
@@ -219,11 +219,12 @@ function locatePashua(strCustomPath) {
 // or key value pairs in which the key is '#' (must be quoted for JS)
 // or 'Comments' | 'comments'
 
-// writeConfig :: [{name:String, type:String, ... }] -> String
 function writeConfig(jsObject) {
+    // writeConfig :: [{name:String, type:String, ... }] -> String
+
     var rgxLines = /[\n\r]+/,
         rgxReturn = /[\n\r]/gm; // -> '[return]',
-		lstElements = jsObject instanceof Array ? jsObject : [jsObject];
+    lstElements = jsObject instanceof Array ? jsObject : [jsObject];
 
     return lstElements
         .reduce(function (a, dct, i) {
@@ -256,18 +257,20 @@ function writeConfig(jsObject) {
                                         nameDot + k + ' = ' + (
                                             'string' === typeof value ?
                                             value.replace(
-                                                rgxReturn, '[return]'
+                                                rgxReturn,
+                                                '[return]'
                                             ) : value
                                         )
                                     );
                                 }
                             }
-                        // Rewrite 'options' array to n * 'option' lines
+                            // Rewrite 'options' array to n * 'option' lines
                         } else {
                             lstLines.push(
                                 dct['options']
                                 .map(function (opt) {
-                                    return nameDot + 'option = ' + opt;
+                                    return nameDot +
+                                        'option = ' + opt;
                                 })
                                 .join('\n')
                             );
@@ -286,6 +289,7 @@ function writeConfig(jsObject) {
 
 // readConfig :: String -> [Object]
 function readConfig(strConfig) {
+    // readConfig :: String -> [Object]
 
     var rgxKeyVal = /([\w\*]+).(\w+)\s*=\s*(.*)/,
         dctParse = strConfig
@@ -327,7 +331,7 @@ function readConfig(strConfig) {
                                 } else a.element = {};
                             } else {
                                 a.element.comments = a.comments
-                                    .join('\n')
+                                    .join('\n');
                             }
                             a.comments = [];
                             a.name = strElem;
@@ -359,4 +363,50 @@ function readConfig(strConfig) {
         });
 
     return dctParse.dialog.concat(dctParse.element);
+}
+
+function run() {
+    var rgxComment = /^\s*\/\//,
+        lst = Object.keys(this)
+		.sort()
+        .reduce(function (a, k) {
+            var v = this[k];
+
+            return (
+                (k !== 'run' && typeof v === 'function') ? (
+                    a.push(v.toString()
+                        .split(/[\n\r]+/)[1])
+                ) : undefined,
+                a
+            );
+        }, [])
+        .map(function (x) {
+            return x.replace(rgxComment, '');
+        });
+
+    if (lst.length) {
+        var strMsg =
+            'Save this file as\n\n\t~/Library/Script Libraries/PashuaJS.scpt\n\n' +
+            "Import it as a Library into another script with\n\n\tvar Pashua = Library('PashuaJS');\n\n" +
+            'and call any of the following functions in the form\n\n\tPashua.showDialog(config);\n\n',
+			
+            a = Application.currentApplication(),
+            sa = (a.includeStandardAdditions = true, a),
+			
+            lstButtons = ['Copy to clipboard', 'OK'],
+            result = (
+                sa.activate(),
+                sa.displayDialog(
+                    strMsg + lst.join('\n'), {
+                        buttons: lstButtons,
+                        defaultButton: 'OK',
+                        withTitle: 'Library: JavaScript for Automation bindings for Pashua',
+                        givingUpAfter: 30
+                    })
+            );
+
+        if (result.buttonReturned = lstButtons[0]) {
+            sa.setTheClipboardTo(strMsg);
+        };
+    }
 }
