@@ -14,7 +14,7 @@ This repository contains uncompiled JavaScript for Automation code. You can open
 
 and run them in Script Editor (NB choose JavaScript in the language selector at top left), but they need a compiled version of “PashuaJS.applescript” (which is also in this folder) to be copied to ~/Library/Script Libraries/ as PashuaJS.scpt
 
-One solution: simply open a Terminal window, run “compile.sh” (i.e. cd to the folder containing these files, then drag the icon of `compile.sh` onto the Terminal window and hit Return) and you’re done. You should now have:
+One solution: simply open a Terminal window, run “compileJS.sh” (i.e. cd to the folder containing these files, then drag the icon of `compileJS.sh` onto the Terminal window and hit Return) and you’re done. You should now have:
 - “Example1ConfigTextJS.scpt”
 - “Example2ConfigObjectJS.scpt”
 - “Example3MixedJS.applescript”
