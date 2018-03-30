@@ -1,9 +1,12 @@
 Overview
 ===========
-This is a JavaScript for Automation binding (glue code) for using Carsten Blüm's [Pashua](http://www.bluem.net/jump/pashua) with JavaScript for Automation. Pashua is a Mac OS X application for using native GUI dialog windows in various programming languages.
+This is a JavaScript for Automation binding (glue code) for using Pashua with JavaScript for Automation. Pashua is a macOS application for using native GUI dialog windows in various programming languages.
 
 This code can be found in a GitHub repository at https://github.com/RobTrew/Pashua-Binding-JXA. For examples in other programming languages, see https://github.com/BlueM/Pashua-Bindings.
 
+Other related links:
+* [Pashua homepage](https://www.bluem.net/jump/pashua)
+* [Pashua repository on GitHub](https://github.com/BlueM/Pashua)
 
 Usage
 ======
